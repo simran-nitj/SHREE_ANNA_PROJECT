@@ -1,0 +1,19 @@
+{% extends 'marketplace/base.html' %}
+
+{% block title %}Confirm Delete{% endblock %}
+
+{% block content %}
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card p-4">
+                <h2>Are you sure you want to delete "{{ product.millet_name }}"?</h2>
+                <p>This action cannot be undone.</p>
+                <form method="POST">
+                    {% csrf_token %}
+                    <a href="{% url 'product_detail' pk=product.pk %}" class="btn btn-secondary">Cancel</a>
+                    <button type="submit" class="btn btn-danger">Yes, Delete</button>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,17 @@
+{% extends 'marketplace/base.html' %}
+
+{% block title %}{{ title|default:"List New Product" }}{% endblock %}
+
+{% block content %}
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <h2>{{ title|default:"List Your Millet Product" }}</h2>
+            <hr>
+            <form method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <button type="submit" class="btn btn-primary mt-3">Save Product</button>
+            </form>
+        </div>
+    </div>
+{% endblock %}

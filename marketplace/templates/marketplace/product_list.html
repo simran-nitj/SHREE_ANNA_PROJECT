@@ -1,0 +1,24 @@
+{% extends 'marketplace/base.html' %}
+
+{% block content %}
+    <h1 class="my-4 text-center">Welcome to the Millet Marketplace</h1>
+    <div class="row">
+        {% for product in products %}
+            <div class="col-md-4">
+                <a href="{% url 'product_detail' pk=product.pk %}" style="text-decoration: none; color: inherit;">
+                    <div class="card mb-4 shadow-sm">
+                        {% if product.image %}<img src="{{ product.image.url }}" class="card-img-top" alt="{{ product.millet_name }}">{% endif %}
+                        <div class="card-body">
+                            <h5 class="card-title">{{ product.millet_name }}</h5>
+                            <p class="card-text">{{ product.description|truncatewords:15 }}</p>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <small class="text-muted">Seller: {{ product.farmer.username }}</small>
+                                <span class="text-success fs-5">₹{{ product.price_per_kg }}/kg</span>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}
