@@ -27,7 +27,11 @@ DEBUG = os.environ.get("DEBUG", "False").lower() == "true"
 
 ALLOWED_HOSTS = os.environ.get("ALLOWED_HOSTS", "").split(" ")
 
-
+ALLOWED_HOSTS = [
+    'shree_anna_connect.onrender.com', # Your live site URL
+    '127.0.0.1',                   # Add this for local development
+    'localhost'                    # Add this for local development
+]
 # Application definition
 
 INSTALLED_APPS = [

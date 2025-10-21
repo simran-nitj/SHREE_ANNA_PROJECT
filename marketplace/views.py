@@ -10,8 +10,18 @@ from django.contrib import messages # To show success messages
 from .forms import ProductForm
 from django.contrib.auth.decorators import login_required
 def product_list(request):
+    # inside your product_list view
+    search_query = request.GET.get('query', None) # Get the search query from the URL
+    if search_query:
+    # Filter products where the name contains the search query (case-insensitive)
+           products = Product.objects.filter(millet_name__icontains=search_query)
+    else:
+        products = Product.objects.all().order_by('-listed_on')
     products = Product.objects.all().order_by('-listed_on')
     return render(request, 'marketplace/product_list.html', {'products': products})
+    
+
+
 
 # --- Add this new function ---
 def product_detail(request, pk):
