@@ -4,3 +4,5 @@ db.sqlite3
 media/
 *.pyc
 __pycache__/
+# ... other ignored files
+.env

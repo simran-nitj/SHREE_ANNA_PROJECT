@@ -19,5 +19,7 @@ urlpatterns = [
     path('cart/', views.cart_detail, name='cart_detail'),
     path('cart/update/<int:product_id>/', views.update_cart, name='update_cart'),
     path('cart/remove/<int:product_id>/', views.remove_from_cart, name='remove_from_cart'),
+    
+    path('api/ask-bot/', views.ai_bot_query, name='ai_bot_query'),
 
 ]

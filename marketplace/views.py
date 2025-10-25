@@ -1,5 +1,7 @@
 # marketplace/views.py
 
+from django.conf import settings # <-- Import settings
+import google.generativeai as genai
 
 from django.shortcuts import render, get_object_or_404, redirect
 from .models import Product
@@ -11,9 +13,10 @@ from django.contrib import messages # To show success messages
 from .forms import ProductForm
 from django.contrib.auth.decorators import login_required
 # marketplace/views.py
-
-# marketplace/views.py
-
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+import google.generativeai as genai
+from .models import Scheme 
 def product_list(request):
     # Start with all products, ordered by the newest first (this part is the same)
     products_list = Product.objects.all().order_by('-listed_on')
@@ -192,3 +195,62 @@ def remove_from_cart(request, product_id):
 
     request.session['cart'] = cart
     return redirect('cart_detail')
+
+# marketplace/views.py
+
+# Make sure these imports are at the top of your file
+# We will need this to get our data
+# ... other imports ...
+
+
+# Add this entire new function to the bottom of the file
+# marketplace/views.py
+
+@csrf_exempt
+def ai_bot_query(request):
+    if request.method == 'POST':
+        question = request.POST.get('question')
+
+        if not question:
+            return JsonResponse({'error': 'No question provided.'}, status=400)
+
+        # 1. RETRIEVE relevant schemes from your database
+        keywords = question.split()
+        relevant_schemes = Scheme.objects.none()
+        for keyword in keywords:
+            relevant_schemes |= Scheme.objects.filter(keywords__icontains=keyword)
+        
+        relevant_schemes = relevant_schemes.distinct()
+
+        if not relevant_schemes:
+            context = "No specific scheme information found for this query."
+        else:
+            context = "Here is some information on relevant schemes:\n"
+            for scheme in relevant_schemes:
+                context += f"- Scheme Name: {scheme.name}\n  Description: {scheme.description}\n  Eligibility: {scheme.eligibility}\n\n"
+
+        genai.configure(api_key=settings.GEMINI_API_KEY)
+        
+        # 2. GENERATE: Create the prompt and send it to the Gemini API
+        # <-- THE ONLY CHANGE IS ON THIS LINE -->
+        model = genai.GenerativeModel('gemini-1.5-flash-latest') 
+        
+        prompt = f"""You are a helpful assistant for Indian farmers named 'Shree Anna Sahayak'. 
+        Your goal is to answer questions about government schemes based ONLY on the context provided below. 
+        Do not use any other information. If the context doesn't contain the answer, say that you don't have enough information on that topic.
+        Keep your answers clear, simple, and in plain language.
+
+        Context:
+        {context}
+
+        Farmer's Question: {question}
+        
+        Answer:"""
+        
+        try:
+            response = model.generate_content(prompt)
+            return JsonResponse({'answer': response.text})
+        except Exception as e:
+            return JsonResponse({'error': f'An error occurred with the AI service: {str(e)}'}, status=500)
+    
+    return JsonResponse({'error': 'Invalid request method.'}, status=405)

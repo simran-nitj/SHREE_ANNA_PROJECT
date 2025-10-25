@@ -9,7 +9,10 @@ https://docs.djangoproject.com/en/5.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.2/ref/settings/
 """
+# shree_anna_connect/settings.py
 
+from dotenv import load_dotenv
+load_dotenv()
 from pathlib import Path
 import os 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -139,3 +142,5 @@ LOGOUT_REDIRECT_URL = '/'
 # settings.py (at the very bottom)
 STATIC_URL = 'static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
+GEMINI_API_KEY = os.environ.get('GEMINI_API_KEY')
