@@ -14,7 +14,16 @@
             <hr>
             <h3>Price: <span class="text-success">₹{{ product.price_per_kg }} / kg</span></h3>
             <p>Available Quantity: <strong>{{ product.quantity_kg }} kg</strong></p>
-            
+            <h3>Price: <span class="text-success">₹{{ product.price_per_kg }} / kg</span></h3>
+            <p>Available Quantity: <strong>{{ product.quantity_kg }} kg</strong></p>
+
+            <form action="{% url 'add_to_cart' product.id %}" method="POST">
+            {% csrf_token %}
+              <button type="submit" class="btn btn-success mt-3">Add to Cart 🛒</button>
+            </form>
+            {% if product.farmer == user %}
+            <a href="{% url 'product_update' pk=product.pk %}" class="btn btn-info mt-3">Edit</a>
+            {% endif %}
             {% if product.farmer == user %}
                 <a href="{% url 'product_update' pk=product.pk %}" class="btn btn-info mt-3">Edit</a>
                 <a href="{% url 'product_delete' pk=product.pk %}" class="btn btn-danger mt-3">Delete</a>
